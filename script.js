@@ -8,59 +8,60 @@ document.addEventListener("DOMContentLoaded", () => {
   const filterButtons = document.querySelectorAll(".filter");
   const progressFill = document.getElementById("progressFill");
   const progressText = document.getElementById("progressText");
-
-  const completeSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3");
+  const darkToggle = document.getElementById("darkToggle");
 
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
   let currentFilter = "all";
   let searchQuery = "";
 
-  /* ================= ADD TASK ================= */
+  function saveTasks() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
+
+  function saveAndRender() {
+    saveTasks();
+    render();
+  }
 
   addBtn.addEventListener("click", addTask);
 
-  // ⌨ Add with Enter key
-  taskInput.addEventListener("keypress", function (e) {
-    if (e.key === "Enter") {
-      addTask();
-    }
+  taskInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") addTask();
   });
 
   function addTask() {
     const text = taskInput.value.trim();
     if (!text) return;
 
-    tasks.push({ text, completed: false });
+    tasks.push({
+      id: Date.now(),
+      text,
+      completed: false
+    });
+
     taskInput.value = "";
     saveAndRender();
   }
-
-  /* ================= SEARCH ================= */
 
   searchInput.addEventListener("input", (e) => {
     searchQuery = e.target.value.toLowerCase();
     render();
   });
 
-  /* ================= FILTERS ================= */
-
   filterButtons.forEach(btn => {
     btn.addEventListener("click", () => {
-      document.querySelector(".filter.active").classList.remove("active");
+      document.querySelector(".filter.active")?.classList.remove("active");
       btn.classList.add("active");
       currentFilter = btn.dataset.filter;
       render();
     });
   });
 
-  /* ================= RENDER ================= */
-
   function render() {
     taskList.innerHTML = "";
 
     let filteredTasks = tasks.filter(task => {
       const matchesSearch = task.text.toLowerCase().includes(searchQuery);
-
       if (currentFilter === "active") return !task.completed && matchesSearch;
       if (currentFilter === "completed") return task.completed && matchesSearch;
       return matchesSearch;
@@ -72,12 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       li.onclick = () => {
         task.completed = !task.completed;
-
-        if (task.completed) {
-          completeSound.currentTime = 0;
-          completeSound.play();
-        }
-
         saveAndRender();
       };
 
@@ -89,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       deleteIcon.onclick = (e) => {
         e.stopPropagation();
-        tasks = tasks.filter(t => t !== task);
+        tasks = tasks.filter(t => t.id !== task.id);
         saveAndRender();
       };
 
@@ -102,24 +97,11 @@ document.addEventListener("DOMContentLoaded", () => {
     updateProgress();
   }
 
-  /* ================= COUNTER ================= */
-
   function updateCounter() {
     const remaining = tasks.filter(t => !t.completed).length;
     taskCounter.textContent =
       `${remaining} task${remaining !== 1 ? "s" : ""} remaining`;
-
-    // 🔍 Show search only when tasks > 10
-    if (tasks.length > 10) {
-      searchInput.style.display = "block";
-    } else {
-      searchInput.style.display = "none";
-      searchInput.value = "";
-      searchQuery = "";
-    }
   }
-
-  /* ================= PROGRESS ================= */
 
   function updateProgress() {
     const completed = tasks.filter(t => t.completed).length;
@@ -130,30 +112,19 @@ document.addEventListener("DOMContentLoaded", () => {
     progressText.textContent = percent + "% Completed";
 
     if (percent === 100 && total > 0) {
-      confetti({
-        particleCount: 150,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
+      confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
     }
   }
 
-  function saveAndRender() {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-    render();
-  }
+  darkToggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+  });
 
-  render();
-
-
-  /* ================= BACKGROUND SLIDESHOW ================= */
-
+  /* Background Slideshow */
   const slides = document.querySelectorAll(".slide");
   let currentSlide = 0;
 
   function changeSlide() {
-    if (slides.length === 0) return;
-
     slides[currentSlide].classList.remove("active");
     currentSlide = (currentSlide + 1) % slides.length;
     slides[currentSlide].classList.add("active");
@@ -161,4 +132,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   setInterval(changeSlide, 5000);
 
+  render();
 });

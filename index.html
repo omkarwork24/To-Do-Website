@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Premium Task Manager</title>
+<title>Task Manager | Omkar Shigvan</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -13,12 +13,8 @@
 </head>
 <body>
 
-<!-- Background Slideshow -->
 <div class="background">
   <div class="slide active"></div>
-  <div class="slide"></div>
-  <div class="slide"></div>
-  <div class="slide"></div>
   <div class="slide"></div>
   <div class="slide"></div>
   <div class="slide"></div>
@@ -33,9 +29,11 @@
 
 <div class="container">
 
-  <h1>To-Do</h1>
+  <div class="top-bar">
+    <h1>Task Manager</h1>
+    <button id="darkToggle"><i class="fa fa-moon"></i></button>
+  </div>
 
-  <!-- Progress -->
   <div class="progress-section">
     <div class="progress-bar">
       <div id="progressFill"></div>
@@ -45,7 +43,7 @@
 
   <p id="taskCounter">0 tasks remaining</p>
 
- <input type="text" id="searchInput" class="hidden-search" placeholder="Search tasks...">
+  <input type="text" id="searchInput" placeholder="Search tasks...">
 
   <div class="filters">
     <button class="filter active" data-filter="all">All</button>
