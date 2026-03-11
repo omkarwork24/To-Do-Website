@@ -23,12 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
     render();
   }
 
-  addBtn.addEventListener("click", addTask);
-
-  taskInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") addTask();
-  });
-
   function addTask() {
     const text = taskInput.value.trim();
     if (!text) return;
@@ -43,6 +37,12 @@ document.addEventListener("DOMContentLoaded", () => {
     saveAndRender();
   }
 
+  addBtn.addEventListener("click", addTask);
+
+  taskInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") addTask();
+  });
+
   searchInput.addEventListener("input", (e) => {
     searchQuery = e.target.value.toLowerCase();
     render();
@@ -56,6 +56,18 @@ document.addEventListener("DOMContentLoaded", () => {
       render();
     });
   });
+
+  function toggleSearchVisibility() {
+    if (tasks.length > 10) {
+      searchInput.classList.remove("search-hidden");
+      searchInput.classList.add("search-visible");
+    } else {
+      searchInput.classList.remove("search-visible");
+      searchInput.classList.add("search-hidden");
+      searchInput.value = "";
+      searchQuery = "";
+    }
+  }
 
   function render() {
     taskList.innerHTML = "";
@@ -95,6 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateCounter();
     updateProgress();
+    toggleSearchVisibility();
   }
 
   function updateCounter() {
