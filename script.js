@@ -133,9 +133,14 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.toggle("dark");
   });
 
-  /* Background Slideshow */
+  /* STABLE LOOPING BACKGROUND */
   const slides = document.querySelectorAll(".slide");
   let currentSlide = 0;
+
+  slides.forEach((slide, index) => {
+    slide.classList.remove("active");
+    if (index === 0) slide.classList.add("active");
+  });
 
   function changeSlide() {
     slides[currentSlide].classList.remove("active");
